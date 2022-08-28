@@ -60,12 +60,7 @@ export const useTask = (cardId: string) => {
     };
 
     const nextState = (taskId: string) => {
-        const task = getTaskById(taskId);
-
-        if (!task) return;
-
-        const state = getNextTaskState(task.state)
-
+        const state = getNextTaskState(taskId)
         setState(taskId, state)
     }
 
@@ -95,9 +90,11 @@ export const useTask = (cardId: string) => {
     const getTasksByCardId = () =>
         getTasks().filter((task) => task.cardId === cardId);
 
-    const getNextTaskState = (currentState: State) => {
+    const getNextTaskState = (id: string) => {
+        const { state = State.TO_DO } = getTaskById(id) ?? {}
+
         const states = cards.map(({ stateTitle }) => stateTitle)
-        const currentStateIndex = states.indexOf(currentState);
+        const currentStateIndex = states.indexOf(state);
         const nextStateIndex = (currentStateIndex + 1) % states.length;
         return states[nextStateIndex]
     }
